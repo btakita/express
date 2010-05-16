@@ -207,18 +207,42 @@ describe 'Express'
     end
     
     describe '#pass()'
-      it 'should pass control to the next matching route'
-        get('/user', function(){ 
-          this.pass()
-        })
-        get('/user', function(){
-          this.pass()
-          return 'nodejs'
-        })
-        get('/user', function(){ return 'success'})
-        get('/user').body.should.eql 'success'
+      describe 'when called synchronously'
+        it 'should pass control to the next matching route'
+          get('/user', function(){
+            this.pass()
+          })
+          get('/user', function(){
+            this.pass()
+            return 'nodejs'
+          })
+          get('/user', function(){ return 'success'})
+          get('/user').body.should.eql 'success'
+        end
       end
-      
+
+      describe 'when called asynchronously'
+        it 'should pass control to the next matching route'
+          get('/user', function(){
+            var self = this
+            setTimeout(1, function() {
+              self.pass()
+            })
+          })
+          get('/user', function(){
+            var self = this
+            setTimeout(1, function() {
+              self.pass()
+            })
+            return 'nodejs'
+          })
+          get('/user', function(){ return 'success'})
+
+          // TODO: Need to test this asynchronously
+//          get('/user').body.should.eql 'success'
+        end
+      end
+
       describe 'given a string'
         it 'should pass to the given route'
           get('/user', function(){
