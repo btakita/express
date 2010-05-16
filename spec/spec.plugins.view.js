@@ -161,7 +161,7 @@ describe 'Express'
           it 'should default context to the current request'
             get('/', function(){
               this.title = 'Welcome'
-              this.render('page.html.haml', { layout: false })
+              this.render('page.html.haml', { layout: false, locals: {body: ""} })
             })
             get('/').body.should.include '<title>Welcome'
           end

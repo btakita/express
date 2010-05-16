@@ -223,23 +223,19 @@ describe 'Express'
 
       describe 'when called asynchronously'
         it 'should pass control to the next matching route'
+          var asynchronousCallback
           get('/user', function(){
             var self = this
-            setTimeout(1, function() {
+            asynchronousCallback = function() {
               self.pass()
-            })
-          })
-          get('/user', function(){
-            var self = this
-            setTimeout(1, function() {
-              self.pass()
-            })
-            return 'nodejs'
+            }
           })
           get('/user', function(){ return 'success'})
 
-          // TODO: Need to test this asynchronously
-//          get('/user').body.should.eql 'success'
+          var response = get('/user')
+          response.body.should.eql undefined
+          asynchronousCallback()
+          response.body.should.eql 'success'
         end
       end
 
